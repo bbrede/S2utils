@@ -123,6 +123,9 @@ cm <- overlay(raster('S2_mosaic_CLD.tif'), raster('S2_mosaic_SCL.tif'), fun = cl
 # S2REP
 # (705.0 + 35 * (((Float("S2_mosaic_B07@1") + "S2_mosaic_B04@1")/2) - "S2_mosaic_B05@1")/("S2_mosaic_B06@1" - "S2_mosaic_B05@1")) * 10
 
+# CI (Clevers & Kooistra, 2012)
+# ( Float("S2_mosaic_B07@1") / "S2_mosaic_B05@1" - 1) * 10000
+
 #### compression ####
 
 # gdal_translate(src_dataset = 'S2_mosaic_NDVI8.tif', 
@@ -158,18 +161,19 @@ writeRaster(s, filename = 'S2_mosaic_brick.tif', datatype = 'INT2U')
 #              'D:/S2_Para/S2_mosaic_B04.tif'))
 # !!!!!!! RAM explodes !!!!!
 
-
+gdal_translate('S2_mosaic_brick.tif', 'S2_thumbnail.png', co = 'QUALITY=10')
 
 #### extraction ####
 
 
-indices <- c('NDVI7', 'NDVI8', 'IRECI', 'NDMI11', 'NDMI12', 'S2REP')
+indices <- c('NDVI7', 'NDVI8', 'NDMI11', 'NDMI12', 'IRECI', 'CI', 'S2REP')
 
 s <- subset(shapefile('AOI.shp'), Category == 'Undisturbed')
 
 df <- do.call(cbind, lapply(indices, function(index) {
   r <- raster(paste0('S2_mosaic_', index, '.tif'))
   l <- extract(r, s)[[1]]
+  scaling <- ifelse(index == 'S2REP', 10, 10000)
   d <- data.frame(l)
   names(d) <- index
   d

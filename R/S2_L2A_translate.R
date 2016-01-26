@@ -1,18 +1,36 @@
+#' Translate S2 L2A products
+#' 
+#' Translate S2 L2A products (underlying jp2000) into other (more common) raster format with CRS.
+#' 
+#' @param S2_folder Folder that contains the S2 L2A product (typically suffixed with .SAFE)
+#' @param out_folder Directory to write the outputs to
+#' @param band Band to extract, can be spectral (B01 to B12 plus B8A) or thematic (SCL or CLD)
+#' @param resolution Band resolution in m
+#' @param granule Which granules to extract (regex is allowed)
+#' @param skipExisting Shall files that have already been writen be ignored?
+#' 
+#' @return list of RasterLayers
+#' 
+#' @export
+
+
 # author: Benjamin Brede
 # date: 2016-01-16
 
 
-# translate S2 jp2000 (w/o CRS) to specified other format (projection = native S2 = UTM)
-# use rasterOptions() to set out format
-S2_L2A_translate <- function(S2_folder, band, resolution=c(10, 20, 60), out_folder, skipExisting=TRUE) {
+S2_L2A_translate <- function(S2_folder, out_folder, band, resolution=c(10, 20, 60), granule=NULL, skipExisting=TRUE) {
   
   require(raster)
   require(gdalUtils)
   require(rgdal)
   # TODO: require gdal version >= 2.1
   
-  # list granule folders, exclude first (GRANULE folder itself, listed by list.dirs function)
-  granules <- list.dirs(file.path(S2_folder, 'GRANULE'), full.names = FALSE, recursive = FALSE)
+  # list all granule folders
+  all_granules <- list.dirs(file.path(S2_folder, 'GRANULE'), full.names = FALSE, recursive = FALSE)
+  if (is.null(granule))
+    granules <- all_granules
+  else
+    granules <- grep(granule, all_granules, value = TRUE)  
   
   lapply(granules, function(g) {
     

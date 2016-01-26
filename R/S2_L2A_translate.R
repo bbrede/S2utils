@@ -27,7 +27,7 @@ S2_L2A_translate <- function(S2_folder, out_folder, band, resolution=c(10, 20, 6
   library(raster)
   library(gdalUtils)
   library(rgdal)
-  # TODO: require gdal version >= 2.1
+  # TODO: require gdal version >= 2.1 -> utils::compareVersion 
   
   # list all granule folders
   all_granules <- list.dirs(file.path(S2_folder, 'GRANULE'), full.names = FALSE, recursive = FALSE)
@@ -42,7 +42,7 @@ S2_L2A_translate <- function(S2_folder, out_folder, band, resolution=c(10, 20, 6
     g_id <- gsub('.*_([A-Z][0-9]{2}[A-Z]{3})_.*', '\\1', g)
     datetime <- gsub('.*_([0-9]{8}T[0-9]{6})_.*', '\\1', g)
     g_folder <- file.path(S2_folder, 'GRANULE', g)
-    geo_info <- S2_L2A_extract_geolocations(list.files(g_folder, 'xml$', full.names = TRUE), resolution)
+    geo_info <- S2_extract_geoinfo(list.files(g_folder, 'xml$', full.names = TRUE), resolution)
     
     jp2 <- list.files(path = g_folder,, 
                       pattern = paste0(band, '_.*', resolution, 'm.jp2'),

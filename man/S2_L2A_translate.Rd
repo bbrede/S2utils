@@ -21,7 +21,7 @@ S2_L2A_translate(S2_folder, out_folder, band, resolution = c(10, 20, 60),
 \item{skipExisting}{Shall files that have already been writen be ignored?}
 }
 \value{
-list of RasterLayers
+list of RasterLayers corresponding to the granules
 }
 \description{
 Translate S2 L2A products (underlying jp2000) into other (more common) raster format with CRS.

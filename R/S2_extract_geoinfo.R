@@ -8,15 +8,17 @@
 #' @return list with dimensions (numeric of 2), UL corner (UTM) cooridnates (numeric of 2), EPSG number of CRS
 #' 
 #' @export
+#' 
+#' @import XML
 
 
 # author: Benjamin Brede
 # date: 2016-01-16
 
 
-S2_extract_geolocations <- function(S2_xml, resolution=c(10, 20, 60)) {
+S2_extract_geoinfo <- function(S2_xml, resolution=c(10, 20, 60)) {
   
-  require(XML)
+  library(XML)
   
   xml <- xmlParse(S2_xml)
   

@@ -9,9 +9,13 @@
 #' @param granule Which granules to extract (regex is allowed)
 #' @param skipExisting Shall files that have already been writen be ignored?
 #' 
-#' @return list of RasterLayers
+#' @return list of RasterLayers corresponding to the granules
 #' 
 #' @export
+#' 
+#' @import raster
+#' @import gdalUtils
+#' @import rgdal
 
 
 # author: Benjamin Brede
@@ -20,9 +24,9 @@
 
 S2_L2A_translate <- function(S2_folder, out_folder, band, resolution=c(10, 20, 60), granule=NULL, skipExisting=TRUE) {
   
-  require(raster)
-  require(gdalUtils)
-  require(rgdal)
+  library(raster)
+  library(gdalUtils)
+  library(rgdal)
   # TODO: require gdal version >= 2.1
   
   # list all granule folders
@@ -32,7 +36,7 @@ S2_L2A_translate <- function(S2_folder, out_folder, band, resolution=c(10, 20, 6
   else
     granules <- grep(granule, all_granules, value = TRUE)  
   
-  lapply(granules, function(g) {
+  out_list <- lapply(granules, function(g) {
     
     # granule id (letter/number combination before spectral band in filename)
     g_id <- gsub('.*_([A-Z][0-9]{2}[A-Z]{3})_.*', '\\1', g)
@@ -40,7 +44,7 @@ S2_L2A_translate <- function(S2_folder, out_folder, band, resolution=c(10, 20, 6
     g_folder <- file.path(S2_folder, 'GRANULE', g)
     geo_info <- S2_L2A_extract_geolocations(list.files(g_folder, 'xml$', full.names = TRUE), resolution)
     
-    jp2 <- list.files(path = g_folder,#file.path(g_folder, 'IMG_DATA'), 
+    jp2 <- list.files(path = g_folder,, 
                       pattern = paste0(band, '_.*', resolution, 'm.jp2'),
                       full.names = TRUE, recursive = TRUE)
     file_id <- paste('S2_L2A', datetime, g_id, band, paste0(resolution, 'm'), sep = '_')
@@ -73,4 +77,7 @@ S2_L2A_translate <- function(S2_folder, out_folder, band, resolution=c(10, 20, 6
     } else
       raster(dst)
   })
+  
+  names(out_list) <- granules
+  out_list
 }

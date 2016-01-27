@@ -1,6 +1,6 @@
 #' Translate S2 L2A products
 #' 
-#' Translate S2 L2A products (underlying jp2000) into other (more common) raster format with CRS.
+#' Translate S2 L2A products (with granules in jp2000 format) into other (more common) raster format with CRS.
 #' 
 #' @param S2_folder Folder that contains the S2 L2A product (typically suffixed with .SAFE)
 #' @param out_folder Directory to write the outputs to
@@ -28,7 +28,7 @@ S2_L2A_translate <- function(S2_folder, out_folder, band, resolution=c(10, 20, 6
   library(gdalUtils)
   library(rgdal)
   
-  gdal_setInstallation()
+  # gdal_setInstallation()
   
   # TODO: require gdal version >= 2.1 -> utils::compareVersion 
   
@@ -47,7 +47,7 @@ S2_L2A_translate <- function(S2_folder, out_folder, band, resolution=c(10, 20, 6
     g_folder <- file.path(S2_folder, 'GRANULE', g)
     geo_info <- S2_extract_geoinfo(list.files(g_folder, 'xml$', full.names = TRUE), resolution)
     
-    jp2 <- list.files(path = g_folder,, 
+    jp2 <- list.files(path = g_folder,
                       pattern = paste0(band, '_.*', resolution, 'm.jp2'),
                       full.names = TRUE, recursive = TRUE)
     file_id <- paste('S2_L2A', datetime, g_id, band, paste0(resolution, 'm'), sep = '_')
@@ -65,7 +65,7 @@ S2_L2A_translate <- function(S2_folder, out_folder, band, resolution=c(10, 20, 6
                             geo_info$UL_corner$ULX + resolution * geo_info$dimensions$NCOLS,
                             geo_info$UL_corner$ULY - resolution * geo_info$dimensions$NROWS,
                             geo_info$UL_corner$ULY))      
-      # data
+      # data type
       dt <- ifelse(band %in% c('SCL', 'CLD'), 'INT1U', 'INT2U')
       
       writeRaster(r, filename = dst, datatype = dt, overwrite = TRUE)

@@ -27,6 +27,9 @@ S2_L2A_translate <- function(S2_folder, out_folder, band, resolution=c(10, 20, 6
   library(raster)
   library(gdalUtils)
   library(rgdal)
+  
+  gdal_setInstallation()
+  
   # TODO: require gdal version >= 2.1 -> utils::compareVersion 
   
   # list all granule folders
@@ -49,7 +52,7 @@ S2_L2A_translate <- function(S2_folder, out_folder, band, resolution=c(10, 20, 6
                       full.names = TRUE, recursive = TRUE)
     file_id <- paste('S2_L2A', datetime, g_id, band, paste0(resolution, 'm'), sep = '_')
     # temporary file for storing from gdal_translate
-    tmp <- tempfile(fileext = '.tif') #file.path(tmpdir, paste0(file_id, '.tif'))
+    tmp <- rasterTmpFile() #file.path(tmpdir, paste0(file_id, '.tif'))
     # destination file
     dst <- file.path(out_folder, paste0(file_id, '.tif'))
     

@@ -25,9 +25,9 @@ S2_L2A_granule <- function(granule_folder, band, resolution=c(10, 20, 60), ...) 
   library(rgdal)
   
   # extract corner coordinates, cell size, CRS from xml
-  geo_info <- S2_extract_geoinfo(list.files(g_folder, 'S2A.+xml$', full.names = TRUE), resolution)
+  geo_info <- S2_extract_geoinfo(list.files(granule_folder, 'S2A.+xml$', full.names = TRUE), resolution)
   
-  jp2 <- list.files(path = g_folder,
+  jp2 <- list.files(path = granule_folder,
                     pattern = paste0(band, '_.*', resolution, 'm.jp2'),
                     full.names = TRUE, recursive = TRUE)
   

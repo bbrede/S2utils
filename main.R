@@ -1,3 +1,20 @@
+
+
+# sample session
+
+library(raster)
+rasterOptions(format = 'GTiff')
+library(gdalUtils)
+# gdal_chooseInstallation(...)
+
+
+
+
+
+
+
+
+
 # author: Benjamin Brede
 # date: 2016-01-16
 

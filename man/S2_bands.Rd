@@ -4,7 +4,12 @@
 \alias{S2_bands}
 \title{S2 band names}
 \usage{
-S2_bands()
+S2_bands(with_name = NULL, with_resolution = NULL)
+}
+\arguments{
+\item{with_name}{Band names that should be returned. Defaults to all.}
+
+\item{with_resolution}{Resolutions that should be returned. Defaults to all.}
 }
 \value{
 data.frame with available S2 band names and their native resolution

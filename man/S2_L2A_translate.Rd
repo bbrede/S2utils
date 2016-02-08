@@ -4,26 +4,26 @@
 \alias{S2_L2A_translate}
 \title{Translate S2 L2A products}
 \usage{
-S2_L2A_translate(S2_folder, out_folder, band, resolution = c(10, 20, 60),
-  granule = NULL, skipExisting = TRUE)
+S2_L2A_translate(S2_folder, band, resolution = c(10, 20, 60), ...)
 }
 \arguments{
 \item{S2_folder}{Folder that contains the S2 L2A product (typically suffixed with .SAFE)}
-
-\item{out_folder}{Directory to write the outputs to}
 
 \item{band}{Band to extract, can be spectral (B01 to B12 plus B8A) or thematic (SCL or CLD)}
 
 \item{resolution}{Band resolution in m}
 
-\item{granule}{Which granules to extract (regex is allowed)}
-
-\item{skipExisting}{Shall files that have already been writen be ignored?}
+\item{...}{Additional arguments as for \code{\link{writeRaster}}}
 }
 \value{
-list of RasterLayers corresponding to the granules
+RasterLayer corresponding to the mosaiced raster of the specified band and resolution
 }
 \description{
-Translate S2 L2A products (underlying jp2000) into other (more common) raster format with CRS.
+Single granules are mosaiced to form one output raster.
+}
+\details{
+Translate a S2 L2A scene into other raster format with CRS.
+
+rasterOptions apply for writing the return raster
 }
 

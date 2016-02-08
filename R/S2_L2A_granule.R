@@ -40,7 +40,12 @@ S2_L2A_granule <- function(granule_folder, band, resolution=c(10, 20, 60), ...) 
                         geo_info$UL_corner$ULY - resolution * geo_info$dimensions$NROWS,
                         geo_info$UL_corner$ULY))      
   
-  writeRaster(r, ...)
+  args <- list(...)
+  # write raster if filename is supplied
+  if ('filename' %in% names(args))
+    writeRaster(r, ...)
+  else 
+    r
   
   ### GDALWARP - did not work
   # target extent in UTM

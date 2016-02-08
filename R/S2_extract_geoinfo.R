@@ -20,10 +20,10 @@ S2_extract_geoinfo <- function(S2_xml, resolution=c(10, 20, 60)) {
   
   library(XML)
   
-  xml <- xmlParse(S2_xml)
+  xml_tree <- xmlParse(S2_xml)
   
   xml_single_value <- function(xpath) 
-    lapply(xmlToList(xpathApply(xml, xpath)[[1]]), as.numeric)
+    lapply(xmlToList(xpathApply(xml_tree, xpath)[[1]]), as.numeric)
   
   # find nodes where node with name Size/Geoposition is parent and attribute resolution has value resolution 
   dims <- sapply(c('NROWS', 'NCOLS'), 
@@ -31,7 +31,7 @@ S2_extract_geoinfo <- function(S2_xml, resolution=c(10, 20, 60)) {
   UL_corner <- sapply(c('ULX', 'ULY'), 
                       function(corner) xml_single_value(paste0('//Geoposition[@resolution=', resolution, ']/', corner)))
   # find node with name HORIZONTAL_CS_CODE
-  epsg_node <- xpathApply(xml, '//HORIZONTAL_CS_CODE')
+  epsg_node <- xpathApply(xml_tree, '//HORIZONTAL_CS_CODE')
   
   list(dimensions = dims, UL_corner = UL_corner, EPSG = xmlValue(epsg_node[[1]]))
 }

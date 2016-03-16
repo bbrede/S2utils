@@ -5,6 +5,7 @@
 #' @param granule_folder Folder that contains the S2 L2A granule
 #' @param band Band to extract, can be spectral (B02 to B12 plus B8A) or thematic (SCL or CLD)
 #' @param resolution Band resolution in m
+#' @param lazy If filename is given and target file already exists, return this as RasterLayer.
 #' @param ... Additional arguments as for \code{\link{writeRaster}}
 #' 
 #' @return RasterLayer

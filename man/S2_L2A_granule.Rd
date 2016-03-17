@@ -4,14 +4,17 @@
 \alias{S2_L2A_granule}
 \title{Translate S2 L2A products}
 \usage{
-S2_L2A_granule(granule_folder, band, resolution = c(10, 20, 60), ...)
+S2_L2A_granule(granule_folder, band, resolution = c(10, 20, 60), filename,
+  ...)
 }
 \arguments{
-\item{granule_folder}{Folder that contains the S2 L2A granule}
+\item{granule_folder}{Folder that contains the S2 L2A granule (typically in the GRANULE folder and of form S2x_USER_MSI_L2A_..._Nxx.xx)}
 
 \item{band}{Band to extract, can be spectral (B02 to B12 plus B8A) or thematic (SCL or CLD)}
 
 \item{resolution}{Band resolution in m}
+
+\item{filename}{Output filename}
 
 \item{...}{Additional arguments as for \code{\link{writeRaster}}}
 }

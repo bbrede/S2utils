@@ -2,9 +2,10 @@
 #' 
 #' Translate a single S2 L2A granule.
 #' 
-#' @param granule_folder Folder that contains the S2 L2A granule
+#' @param granule_folder Folder that contains the S2 L2A granule (typically in the GRANULE folder and of form S2x_USER_MSI_L2A_..._Nxx.xx)
 #' @param band Band to extract, can be spectral (B02 to B12 plus B8A) or thematic (SCL or CLD)
 #' @param resolution Band resolution in m
+#' @param filename Output filename
 #' @param ... Additional arguments as for \code{\link{writeRaster}}
 #' 
 #' @return RasterLayer
@@ -18,7 +19,7 @@
 #' @import rgdal
 
 
-S2_L2A_granule <- function(granule_folder, band, resolution=c(10, 20, 60)) {
+S2_L2A_granule <- function(granule_folder, band, resolution=c(10, 20, 60), filename, ...) {
   
   library(raster)
   library(gdalUtils)
@@ -42,7 +43,7 @@ S2_L2A_granule <- function(granule_folder, band, resolution=c(10, 20, 60)) {
                         geo_info$UL_corner$ULY))      
   
   # write raster, so the crs and extent are written to file
-  writeRaster(r, ...)
+  writeRaster(r, filename = filename, ...)
 
   
   ### GDALWARP - did not work

@@ -37,7 +37,7 @@ S2_L2A_translate <- function(S2_folder, band, resolution=c(10, 20, 60), ...) {
   
   # extract the single tiles
   rsts <- lapply(all_granules, S2_L2A_granule, band = band, resolution = resolution)
-  rst_names <- lapply(rsts, filename)
+  rst_names <- sapply(rsts, filename)
   
   r <- mosaic_rasters(rst_names, dst_dataset = rasterTmpFile(), output_Raster = TRUE)
   

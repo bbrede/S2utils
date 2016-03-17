@@ -25,7 +25,8 @@ S2_L2A_granule <- function(granule_folder, band, resolution=c(10, 20, 60)) {
   library(rgdal)
   
   # extract corner coordinates, cell size, CRS from xml
-  geo_info <- S2_extract_geoinfo(list.files(granule_folder, 'S2A.+xml$', full.names = TRUE, recursive = FALSE), resolution)
+  xml <- list.files(granule_folder, 'S2A.+xml$', full.names = TRUE, recursive = FALSE)
+  geo_info <- S2_extract_geoinfo(xml, resolution)
   
   jp2 <- list.files(path = granule_folder,
                     pattern = paste0(band, '_.*', resolution, 'm.jp2'),
@@ -40,12 +41,9 @@ S2_L2A_granule <- function(granule_folder, band, resolution=c(10, 20, 60)) {
                         geo_info$UL_corner$ULY - resolution * geo_info$dimensions$NROWS,
                         geo_info$UL_corner$ULY))      
   
-  
-  # write raster if filename is supplied
-  if ('filename' %in% names(args))
-    writeRaster(r, ...)
-  else 
-    r
+  # write raster, so the crs and extent are written to file
+  writeRaster(r, ...)
+
   
   ### GDALWARP - did not work
   # target extent in UTM

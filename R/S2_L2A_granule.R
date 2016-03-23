@@ -2,10 +2,10 @@
 #' 
 #' Translate a single S2 L2A granule.
 #' 
-#' @param granule_folder Folder that contains the S2 L2A granule (typically in the GRANULE folder and of form S2x_USER_MSI_L2A_..._Nxx.xx)
+#' @param granule_path Folder that contains the S2 L2A granule (typically within GRANULE folder and of form S2x_USER_MSI_L2A_..._Nxx.xx)
 #' @param band Band to extract, can be spectral (B02 to B12 plus B8A) or thematic (SCL or CLD)
 #' @param resolution Band resolution in m
-#' @param filename Output filename
+#' @param filename Output filename; will be automatically suffixed with tileID
 #' @param ... Additional arguments as for \code{\link{writeRaster}}
 #' 
 #' @return RasterLayer
@@ -19,17 +19,18 @@
 #' @import rgdal
 
 
-S2_L2A_granule <- function(granule_folder, band, resolution=c(10, 20, 60), filename, ...) {
+S2_L2A_granule <- function(granule_path, band, resolution=c(10, 20, 60), filename, ...) {
   
+  library(tools)
   library(raster)
   library(gdalUtils)
   library(rgdal)
   
   # extract corner coordinates, cell size, CRS from xml
-  xml <- list.files(granule_folder, 'S2A.+xml$', full.names = TRUE, recursive = FALSE)
+  xml <- list.files(granule_path, 'S2A.+xml$', full.names = TRUE, recursive = FALSE)
   geo_info <- S2_extract_geoinfo(xml, resolution)
   
-  jp2 <- list.files(path = granule_folder,
+  jp2 <- list.files(path = granule_path,
                     pattern = paste0(band, '_.*', resolution, 'm.jp2'),
                     full.names = TRUE, recursive = TRUE)
   
@@ -40,11 +41,23 @@ S2_L2A_granule <- function(granule_folder, band, resolution=c(10, 20, 60), filen
   extent(r) <- extent(c(geo_info$UL_corner$ULX,
                         geo_info$UL_corner$ULX + resolution * geo_info$dimensions$NCOLS,
                         geo_info$UL_corner$ULY - resolution * geo_info$dimensions$NROWS,
-                        geo_info$UL_corner$ULY))      
+                        geo_info$UL_corner$ULY))
+  
+  # extract date and time from filename
+  datetime <- as.POSIXct(strptime(sub('.*S2.*_([0-9]{8}T[0-9]{6})_.*jp2', '\\1', jp2), '%Y%m%dT%H%M%S', 'UTC'))
+  # extract tile ID from filename
+  tileID <- sub('.*_(T[0-9]{2}[A-Z]{3})_.*jp2', '\\1', jp2)
+  
+  # insert tileID in filename
+  mod_filename <-  paste0(file_path_sans_ext(filename(r)), '_', tileID, '.', file_ext(filename(r)))
   
   # write raster, so the crs and extent are written to file
-  writeRaster(r, filename = filename, ...)
-
+  out <- writeRaster(r, filename = mod_filename, ...)
+  
+  # add Date
+  out <- setZ(out, datetime, 'DateTime')
+  
+  out
   
   ### GDALWARP - did not work
   # target extent in UTM

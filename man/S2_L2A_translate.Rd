@@ -4,7 +4,7 @@
 \alias{S2_L2A_translate}
 \title{Translate S2 L2A products}
 \usage{
-S2_L2A_translate(S2_folder, band, resolution = c(10, 20, 60), filename)
+S2_L2A_translate(S2_folder, band, resolution = c(10, 20, 60), filename, ...)
 }
 \arguments{
 \item{S2_folder}{Folder that contains the S2 L2A product (typically suffixed with .SAFE)}
@@ -13,17 +13,17 @@ S2_L2A_translate(S2_folder, band, resolution = c(10, 20, 60), filename)
 
 \item{resolution}{Band resolution in m}
 
-\item{filename}{Output filename}
+\item{filename}{Output filename, single tiles will be suffixed with tileID}
+
+\item{...}{Additional arguments as for \code{\link{writeRaster}}}
 }
 \value{
-RasterLayer corresponding to the mosaiced raster of the specified band and resolution
+List of RasterLayers corresponding to the raster of the specified band and resolution
 }
 \description{
-Single granules are mosaiced to form one output raster.
+Translate an S2 L2A scene into other raster format.
 }
 \details{
-Translate an S2 L2A scene into other raster format.
-
-rasterOptions apply for writing the return raster
+rasterOptions apply for writing the return rasters
 }
 

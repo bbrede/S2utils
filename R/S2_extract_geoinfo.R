@@ -20,10 +20,8 @@ S2_extract_geoinfo <- function(S2_xml, resolution=c(10, 20, 60)) {
   
   library(XML)
   
-  xml_tree <- xmlParse(S2_xml)
-  
   xml_single_value <- function(xpath) 
-    lapply(xmlToList(xpathApply(xml_tree, xpath)[[1]]), as.numeric)
+    lapply(xmlToList(xpathApply(S2_xml, xpath)[[1]]), as.numeric)
   
   # find nodes where node with name Size/Geoposition is parent and attribute resolution has value resolution 
   dims <- sapply(c('NROWS', 'NCOLS'), 

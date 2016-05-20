@@ -1,0 +1,44 @@
+#' Define sensor with uniform response function
+#' 
+#' Define sensor with uniform response function
+#' 
+#' @param min Numeric vector with minimum (lower) wavelengths
+#' @param max Numeric vector with maximum (upper) wavelengths
+#' @param []
+#' 
+#' @return [weights to apply to the bands of src to simulate template; as data.frame]
+#' 
+#' @export
+#' 
+#' @import []
+
+Sensor_uniform <- function(min, max, band_name, wlunit='nm', minwl, maxwl, stepsize=1) {
+  
+  # all possible wavelengths
+  lambda <- seq(minwl, maxwl, stepsize)
+  
+  # create data.frame band by band
+  sensor <- do.call(cbind, lapply(seq_along(band_name), function(i) {
+    
+    response <- numeric(length = length(lambda))
+    # set response to 1
+    response[lambda >= min[i] & lambda <= max[i]] <- 1
+    
+    df <- data.frame(response)
+    names(df) <- band_name[i]
+    
+    df
+  }))
+  
+  # set attributes
+  attr(sensor, 'wlunit') <- wlunit
+  attr(sensor, 'minwl') <- minwl
+  attr(sensor, 'maxwl') <- maxwl
+  attr(sensor, 'stepsize') <- stepsize
+  
+  sensor
+  
+  
+  
+  
+}

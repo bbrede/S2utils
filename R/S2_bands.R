@@ -2,7 +2,7 @@
 #' 
 #' Possible S2 band names and native resolutions
 #' 
-#' @description Note that derived bands (all bands not starting with B) are produced at the resolution that is demanded, i.e. don"t have a native resolution 
+#' @description Note that derived bands (all bands not starting with B) are produced at the resolution that is demanded, i.e. don't have a native resolution 
 #' 
 #' @param with_name Band names that should be returned. Defaults to all.
 #' @param with_resolution Resolutions that should be returned. Defaults to all.

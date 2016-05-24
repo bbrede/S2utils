@@ -4,15 +4,17 @@
 #' 
 #' @param min Numeric vector with minimum (lower) wavelengths
 #' @param max Numeric vector with maximum (upper) wavelengths
-#' @param []
+#' @param band_name Vector with band names (will be coerced to character)
+#' @param wlunit Label of wavelength unit (character)
+#' @param minwl Minimum wavelength (numeric)
+#' @param maxwl Maximum wavelength (numeric)
+#' @param stepsize Wavelength increment (numeric)
 #' 
-#' @return [weights to apply to the bands of src to simulate template; as data.frame]
+#' @return Data.frame with bands in columns, meta data as attributes
 #' 
 #' @export
-#' 
-#' @import []
 
-Sensor_uniform <- function(min, max, band_name, wlunit='nm', minwl, maxwl, stepsize=1) {
+Sensor_uniform <- function(min, max, band_name, wlunit='nm', minwl=400, maxwl=2500, stepsize=1) {
   
   # all possible wavelengths
   lambda <- seq(minwl, maxwl, stepsize)

@@ -49,7 +49,7 @@ S2_L2A_granule <- function(granule_path, band, resolution=c(10, 20, 60), filenam
   tileID <- sub('.*_(T[0-9]{2}[A-Z]{3})_.*jp2', '\\1', jp2)
   
   # insert tileID in filename
-  mod_filename <-  paste0(file_path_sans_ext(filename(r)), '_', tileID, '.', file_ext(filename(r)))
+  mod_filename <-  paste0(file_path_sans_ext(filename), '_', tileID, '_', band, '_', resolution, 'm.', file_ext(filename))
   
   # write raster, so the crs and extent are written to file
   out <- writeRaster(r, filename = mod_filename, ...)

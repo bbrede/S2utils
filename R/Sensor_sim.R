@@ -10,6 +10,8 @@
 #' 
 #' @return weights to apply to the bands of src to simulate target; as matrix
 #' 
+#' @author Benjamin Brede
+#' 
 #' @export
 
 Sensor_sim <- function(simulator, target, eps) {

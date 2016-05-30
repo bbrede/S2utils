@@ -12,6 +12,8 @@
 #' 
 #' @return Data.frame with bands in columns, meta data as attributes
 #' 
+#' @author Benjamin Brede
+#' 
 #' @export
 
 Sensor_uniform <- function(min, max, band_name, wlunit='nm', minwl=400, maxwl=2500, stepsize=1) {

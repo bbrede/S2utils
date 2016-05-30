@@ -15,9 +15,12 @@ S2_bands(with_name = NULL, with_resolution = NULL)
 data.frame with available S2 band names and their native resolution
 }
 \description{
-Note that derived bands (all bands not starting with B) are produced at the resolution that is demanded, i.e. don"t have a native resolution
+Note that derived bands (all bands not starting with B) are produced at the resolution that is demanded, i.e. don't have a native resolution
 }
 \details{
 Possible S2 band names and native resolutions
+}
+\author{
+Benjamin Brede
 }
 

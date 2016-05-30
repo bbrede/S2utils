@@ -13,6 +13,8 @@
 #' 
 #' @references \link{https://scihub.copernicus.eu/twiki/do/view/SciHubUserGuide/5APIsAndBatchScripting#Query_via_Wget}
 #' 
+#' @author Benjamin Brede
+#' 
 #' @export
 #' 
 #' @import XML

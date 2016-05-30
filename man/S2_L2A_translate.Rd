@@ -26,4 +26,7 @@ Translate an S2 L2A scene into other raster format.
 \details{
 rasterOptions apply for writing the return rasters
 }
+\author{
+Benjamin Brede
+}
 

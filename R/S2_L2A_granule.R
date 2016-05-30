@@ -5,15 +5,18 @@
 #' @param granule_path Folder that contains the S2 L2A granule (typically within GRANULE folder and of form S2x_USER_MSI_L2A_..._Nxx.xx)
 #' @param band Band to extract, can be spectral (B02 to B12 plus B8A) or thematic (SCL or CLD)
 #' @param resolution Band resolution in m
-#' @param filename Output filename; will be automatically suffixed with tileID
+#' @param filename Output filename; will be automatically suffixed with tileID, band name and resolution
 #' @param ... Additional arguments as for \code{\link{writeRaster}}
 #' 
 #' @return RasterLayer
 #' 
 #' @details rasterOptions apply for writing the return raster
 #' 
+#' @author Benjamin Brede
+#' 
 #' @export
 #' 
+#' @import tools
 #' @import raster
 #' @import gdalUtils
 #' @import rgdal

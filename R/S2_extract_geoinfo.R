@@ -2,18 +2,16 @@
 #' 
 #' Extract geo-location and CRS infos from S2 xml
 #' 
-#' @param S2_xml S2 xml file
+#' @param S2_xml S2 product xml file
 #' @param resolution For which resolution shall the information be extracted?
 #' 
 #' @return list with dimensions (numeric of 2), UL corner (UTM) cooridnates (numeric of 2), EPSG number of CRS
 #' 
+#' @author Benjamin Brede
+#' 
 #' @export
 #' 
 #' @import XML
-
-
-# author: Benjamin Brede
-# date: 2016-01-16
 
 
 S2_extract_geoinfo <- function(S2_xml, resolution=c(10, 20, 60)) {

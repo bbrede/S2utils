@@ -7,7 +7,7 @@
 S2_extract_geoinfo(S2_xml, resolution = c(10, 20, 60))
 }
 \arguments{
-\item{S2_xml}{S2 xml file}
+\item{S2_xml}{S2 product xml file}
 
 \item{resolution}{For which resolution shall the information be extracted?}
 }
@@ -16,5 +16,8 @@ list with dimensions (numeric of 2), UL corner (UTM) cooridnates (numeric of 2),
 }
 \description{
 Extract geo-location and CRS infos from S2 xml
+}
+\author{
+Benjamin Brede
 }
 

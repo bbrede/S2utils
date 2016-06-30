@@ -20,6 +20,7 @@
 #' @import raster
 #' @import gdalUtils
 #' @import rgdal
+#' @import utils
 
 
 S2_L2A_granule <- function(granule_path, band, resolution=c(10, 20, 60), filename, ...) {
@@ -28,6 +29,7 @@ S2_L2A_granule <- function(granule_path, band, resolution=c(10, 20, 60), filenam
   library(raster)
   library(gdalUtils)
   library(rgdal)
+  library(utils)
   
   # extract corner coordinates, cell size, CRS from xml
   xml_file <- list.files(granule_path, 'S2A.+xml$', full.names = TRUE, recursive = FALSE)
@@ -37,25 +39,40 @@ S2_L2A_granule <- function(granule_path, band, resolution=c(10, 20, 60), filenam
                     pattern = paste0(band, '_.*', resolution, 'm.jp2'),
                     full.names = TRUE, recursive = TRUE)
   
-  r <- gdal_translate(src_dataset = jp2, dst_dataset = rasterTmpFile(), output_Raster = TRUE)
-  
-  # assign CRS and extent
-  crs(r) <- CRS(paste0('+init=', tolower(geo_info$EPSG)))
-  extent(r) <- extent(c(geo_info$UL_corner$ULX,
-                        geo_info$UL_corner$ULX + resolution * geo_info$dimensions$NCOLS,
-                        geo_info$UL_corner$ULY - resolution * geo_info$dimensions$NROWS,
-                        geo_info$UL_corner$ULY))
-  
   # extract date and time from filename
-  datetime <- as.POSIXct(strptime(sub('.*S2.*_([0-9]{8}T[0-9]{6})_.*jp2', '\\1', jp2), '%Y%m%dT%H%M%S', 'UTC'))
+  datetime <- as.POSIXct(strptime(sub('.*S2.*_V([0-9]{8}T[0-9]{6})_.*jp2', '\\1', jp2), '%Y%m%dT%H%M%S', 'UTC'))
   # extract tile ID from filename
   tileID <- sub('.*_(T[0-9]{2}[A-Z]{3})_.*jp2', '\\1', jp2)
   
   # insert tileID in filename
   mod_filename <-  paste0(file_path_sans_ext(filename), '_', tileID, '_', band, '_', resolution, 'm.', file_ext(filename))
   
-  # write raster, so the crs and extent are written to file
-  out <- writeRaster(r, filename = mod_filename, ...)
+  # pre-check overwriting options to prevent unnecessary operations
+  optsOverwrite <- as.logical(sub('.*(TRUE|FALSE).*', '\\1', grep('overwrite', capture.output(rasterOptions()), value = TRUE)))
+  args <- list(...)
+  
+  if ('overwrite' %in% names(args))
+    overwrite <- args$overwrite
+  else
+    overwrite <- optsOverwrite
+  
+  if (file.exists(mod_filename) & overwrite | !file.exists(mod_filename)) {
+    
+    r <- gdal_translate(src_dataset = jp2, dst_dataset = rasterTmpFile(), output_Raster = TRUE)
+    
+    # assign CRS and extent
+    crs(r) <- CRS(paste0('+init=', tolower(geo_info$EPSG)))
+    extent(r) <- extent(c(geo_info$UL_corner$ULX,
+                          geo_info$UL_corner$ULX + resolution * geo_info$dimensions$NCOLS,
+                          geo_info$UL_corner$ULY - resolution * geo_info$dimensions$NROWS,
+                          geo_info$UL_corner$ULY))
+    
+    # write raster, so the crs and extent are written to file
+    out <- writeRaster(r, filename = mod_filename, ...)
+    
+  } else {
+    out <- raster(mod_filename)
+  }
   
   # add Date
   out <- setZ(out, datetime, 'DateTime')

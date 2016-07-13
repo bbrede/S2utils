@@ -81,10 +81,13 @@ Sensor_sim <- function(simulator, target, eps) {
                    fn = error,
                    lower = rep(0, ncol(simu_select)), 
                    method = 'L-BFGS-B')
+      
       # set weights in the results vector
       res[is_suitable] <- opt$par
+      
       # it's possible that simulator bands got non-significant weights (equal 0) during optimization
       res[res == 0] <- NA
+      
       # in case only one band is significant, set this to 1            
       if (sum(res != 0, na.rm = TRUE) == 1)
         res / res

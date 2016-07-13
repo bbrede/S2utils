@@ -13,7 +13,7 @@ S2_L2A_granule(granule_path, band, resolution = c(10, 20, 60), filename, ...)
 
 \item{resolution}{Band resolution in m}
 
-\item{filename}{Output filename; will be automatically suffixed with tileID}
+\item{filename}{Output filename; will be automatically suffixed with tileID, band name and resolution}
 
 \item{...}{Additional arguments as for \code{\link{writeRaster}}}
 }
@@ -25,5 +25,8 @@ Translate a single S2 L2A granule.
 }
 \details{
 rasterOptions apply for writing the return raster
+}
+\author{
+Benjamin Brede
 }
 

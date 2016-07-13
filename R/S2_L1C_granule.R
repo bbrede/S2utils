@@ -10,6 +10,8 @@
 #' 
 #' @details rasterOptions apply for writing the return raster
 #' 
+#' @author Benjamin Brede
+#' 
 #' @export
 #' 
 #' @import raster

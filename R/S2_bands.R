@@ -9,6 +9,8 @@
 #' 
 #' @return data.frame with available S2 band names and their native resolution
 #' 
+#' @author Benjamin Brede
+#' 
 #' @export
 
 

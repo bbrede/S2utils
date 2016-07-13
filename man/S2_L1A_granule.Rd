@@ -22,4 +22,7 @@ Translate a single S2 L1C granule.
 \details{
 rasterOptions apply for writing the return raster
 }
+\author{
+Benjamin Brede
+}
 

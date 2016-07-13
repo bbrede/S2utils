@@ -2,15 +2,19 @@
 #' 
 #' Define sensor with gaussian response function
 #' 
-#' @param center Numeric vector with center wavelengths
-#' @param fwhm Numeric vector with Full Width Half Maximum values
-#' @param []
+#' @param center Vector with center wavelengths (numeric vector)
+#' @param fwhm Vector with Full Width Half Maximum values (numeric vector)
+#' @param band_name Vector with band names (will be coerced to character)
+#' @param wlunit Label of wavelength unit (character)
+#' @param minwl Minimum wavelength (numeric)
+#' @param maxwl Maximum wavelength (numeric)
+#' @param stepsize Wavelength increment (numeric)
 #' 
-#' @return [weights to apply to the bands of src to simulate template; as data.frame]
+#' @return Data.frame with bands in columns, meta data as attributes
+#' 
+#' @author Benjamin Brede
 #' 
 #' @export
-#' 
-#' @import []
 
 Sensor_gaussian <- function(center, fwhm, band_name, wlunit='nm', minwl=400, maxwl=2500, stepsize=1) {
   
@@ -20,6 +24,7 @@ Sensor_gaussian <- function(center, fwhm, band_name, wlunit='nm', minwl=400, max
   # all possible wavelengths
   lambda <- seq(minwl, maxwl, stepsize)
   
+  # response function (based on lambda) defined by center wavelength and fwhm of band
   gaussian_response <- function(cen, f) exp(-4 * log(2) * (lambda - cen) ^ 2 / f ^ 2)
   
   # create data.frame band by band
@@ -30,7 +35,7 @@ Sensor_gaussian <- function(center, fwhm, band_name, wlunit='nm', minwl=400, max
     response[response < 0.001] <- 0
     
     df <- data.frame(response)
-    names(df) <- band_name[i]
+    names(df) <- as.character(band_name)[i]
     
     df
   }))

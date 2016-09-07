@@ -2,6 +2,8 @@
 #' 
 #' Query the API Hub for Sentinel scenes
 #' 
+#' @description Performs Hub queries via wget.
+#' 
 #' @param uri_query URI query as used in the Sentinel SciHub
 #' @param username API Hub username
 #' @param password API Hub password
@@ -20,24 +22,14 @@
 
 Hub_query <- function(uri_query, username, password, xml_file = tempfile(fileext = '.xml'), show_status = FALSE) {
   
-  # test if wget is installed
-  # if ()
+  uuid_query <- paste0('https://scihub.copernicus.eu/apihub/search?q=', uri_query)
   
-  inp_file <- tempfile(fileext = '.inp')
-  
-  # write url command to file (on Windows: to avoid problems with cmd)
-  url_base <- 'https://scihub.copernicus.eu/apihub/search?q='
-  url <- paste0(url_base, uri_query)
-  writeLines(text = url, con = inp_file)
-    
-  extra <- paste('--no-check-certificate', 
-                 '--user', username,
-                 '--password', password,
-                 '-O', xml_file,
-                 '-i', inp_file)
-  
-  sys_call <- paste('wget', extra)
-  system(sys_call, show.output.on.console = show_status)
+  cmd <- paste('wget --no-check-certificate', 
+               paste0('--user=', username),
+               paste0('--password=', password),
+               paste0('--output-document=', shQuote(xml_file)),
+               shQuote(uuid_query))
+  system(cmd, show.output.on.console = show_status)
   
   xml_file
 }

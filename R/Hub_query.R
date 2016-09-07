@@ -22,7 +22,7 @@
 
 Hub_query <- function(uri_query, username, password, xml_file = tempfile(fileext = '.xml'), show_status = FALSE) {
   
-  uuid_query <- paste0('https://scihub.copernicus.eu/apihub/search?q=', uri_query)
+  uuid_query <- paste0('https://scihub.copernicus.eu/dhus/search?q=', uri_query)
   
   cmd <- paste('wget --no-check-certificate', 
                paste0('--user=', username),

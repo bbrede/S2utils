@@ -28,9 +28,15 @@ Hub_download <- function(xml_file, target_dir, username, password, overwrite = F
   xml_list <- xmlToList(xmlParse(xml_file))
   entries <- xml_list[names(xml_list) == 'entry']
   
-  source_uuids <- sapply(entries, function(e) paste0('https://scihub.copernicus.eu/dhus/odata/v1/Products(\'', e$id, '\')/$value'))
+  if (Sys.info()['sysname'] == 'Linux')
+  source_uuids <- sapply(entries, function(e) paste0("\u0022https://scihub.copernicus.eu/dhus/odata/v1/Products\u0028'", e$id, "'\u0029/\\$value\u0022"))
+  else if (Sys.info()['sysname'] == 'Windows')
+    source_uuids <- sapply(entries, function(e) paste0('https://scihub.copernicus.eu/dhus/odata/v1/Products(\'', e$id, '\')/$value'))
+  else
+    stop('Unsupported OS!')
+  
   target_files <- sapply(entries, function(e) paste0(file.path(target_dir, e$title), '.zip'))
-    
+
   # expand UUIDs and filenames
   expanded <- paste('--no-check-certificate', 
                     '--user', username,
@@ -41,7 +47,7 @@ Hub_download <- function(xml_file, target_dir, username, password, overwrite = F
   # download
   for (i in seq_along(expanded)) {
     if (overwrite | !file.exists(target_files[i]))
-      system(paste('wget', expanded[i]), show.output.on.console = show_status)
+      system(paste('wget', expanded[i]))
   }
   
   target_files

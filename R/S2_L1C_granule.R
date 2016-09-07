@@ -18,7 +18,6 @@
 #' @import gdalUtils
 #' @import rgdal
 
-
 S2_L1A_granule <- function(granule_folder, band, lazy=FALSE, ...) {
   
   library(raster)

@@ -4,18 +4,21 @@
 \alias{S2_L2A_granule}
 \title{Translate S2 L2A products}
 \usage{
-S2_L2A_granule(granule_path, band, resolution = c(10, 20, 60), filename, ...)
+S2_L2A_granule(granule_path, band, resolution = c(10, 20, 60), filename,
+  overwrite = FALSE, ...)
 }
 \arguments{
 \item{granule_path}{Folder that contains the S2 L2A granule (typically within GRANULE folder and of form S2x_USER_MSI_L2A_..._Nxx.xx)}
 
 \item{band}{Band to extract, can be spectral (B02 to B12 plus B8A) or thematic (SCL or CLD)}
 
-\item{resolution}{Band resolution in m}
+\item{resolution}{Band resolution in m, allowed: 10, 20, 60}
 
 \item{filename}{Output filename; will be automatically suffixed with tileID, band name and resolution}
 
-\item{...}{Additional arguments as for \code{\link{writeRaster}}}
+\item{overwrite}{Overwrite existing files?}
+
+\item{...}{Additional arguments as for \code{\link{gdal_translate}}, not allowed: a_srs, a_ullr.}
 }
 \value{
 RasterLayer
@@ -24,7 +27,7 @@ RasterLayer
 Translate a single S2 L2A granule.
 }
 \details{
-rasterOptions apply for writing the return raster
+rasterOptions apply for writing the return raster. Filename will be automatically suffixed with granule ID and band name.
 }
 \author{
 Benjamin Brede

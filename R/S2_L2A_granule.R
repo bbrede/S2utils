@@ -1,16 +1,17 @@
 #' Translate S2 L2A products
 #' 
-#' Translate a single S2 L2A granule.
+#' Translate a single S2 L2A granule. 
 #' 
 #' @param granule_path Folder that contains the S2 L2A granule (typically within GRANULE folder and of form S2x_USER_MSI_L2A_..._Nxx.xx)
 #' @param band Band to extract, can be spectral (B02 to B12 plus B8A) or thematic (SCL or CLD)
-#' @param resolution Band resolution in m
+#' @param resolution Band resolution in m, allowed: 10, 20, 60
 #' @param filename Output filename; will be automatically suffixed with tileID, band name and resolution
-#' @param ... Additional arguments as for \code{\link{writeRaster}}
+#' @param overwrite Overwrite existing files?
+#' @param ... Additional arguments as for \code{\link{gdal_translate}}, not allowed: a_srs, a_ullr.
 #' 
 #' @return RasterLayer
 #' 
-#' @details rasterOptions apply for writing the return raster
+#' @details rasterOptions apply for writing the return raster. Filename will be automatically suffixed with granule ID and band name.
 #' 
 #' @author Benjamin Brede
 #' 
@@ -19,17 +20,8 @@
 #' @import tools
 #' @import raster
 #' @import gdalUtils
-#' @import rgdal
-#' @import utils
 
-
-S2_L2A_granule <- function(granule_path, band, resolution=c(10, 20, 60), filename, ...) {
-  
-  library(tools)
-  library(raster)
-  library(gdalUtils)
-  library(rgdal)
-  library(utils)
+S2_L2A_granule <- function(granule_path, band, resolution = c(10, 20, 60), filename, overwrite = FALSE, ...) {
   
   # extract corner coordinates, cell size, CRS from xml
   xml_file <- list.files(granule_path, 'S2A.+xml$', full.names = TRUE, recursive = FALSE)
@@ -45,45 +37,22 @@ S2_L2A_granule <- function(granule_path, band, resolution=c(10, 20, 60), filenam
   tileID <- sub('.*_(T[0-9]{2}[A-Z]{3})_.*jp2', '\\1', jp2)
   
   # insert tileID in filename
-  mod_filename <-  paste0(file_path_sans_ext(filename), '_', tileID, '_', band, '_', resolution, 'm.', file_ext(filename))
-  
-  # pre-check overwriting options to prevent unnecessary operations
-  optsOverwrite <- as.logical(sub('.*(TRUE|FALSE).*', '\\1', grep('overwrite', capture.output(rasterOptions()), value = TRUE)))
-  args <- list(...)
-  
-  if ('overwrite' %in% names(args))
-    overwrite <- args$overwrite
-  else
-    overwrite <- optsOverwrite
+  mod_filename <- paste0(file_path_sans_ext(filename), '_', tileID, '_', band, '_', resolution, 'm.', file_ext(filename))
   
   if (file.exists(mod_filename) & overwrite | !file.exists(mod_filename)) {
-    
-    r <- gdal_translate(src_dataset = jp2, dst_dataset = rasterTmpFile(), output_Raster = TRUE)
-    
+    # target extent in GDAL conform vector c(ulx,uly,lrx,lry)
+    te <- c(geo_info$UL_corner$ULX,
+            geo_info$UL_corner$ULY,
+            geo_info$UL_corner$ULX + resolution * geo_info$dimensions$NCOLS,
+            geo_info$UL_corner$ULY - resolution * geo_info$dimensions$NROWS)
     # assign CRS and extent
-    crs(r) <- CRS(paste0('+init=', tolower(geo_info$EPSG)))
-    extent(r) <- extent(c(geo_info$UL_corner$ULX,
-                          geo_info$UL_corner$ULX + resolution * geo_info$dimensions$NCOLS,
-                          geo_info$UL_corner$ULY - resolution * geo_info$dimensions$NROWS,
-                          geo_info$UL_corner$ULY))
-    
-    # write raster, so the crs and extent are written to file
-    out <- writeRaster(r, filename = mod_filename, ...)
+    gdal_translate(src_dataset = jp2, 
+                   dst_dataset = mod_filename, 
+                   a_srs = paste0('+init=', tolower(geo_info$EPSG)),
+                   a_ullr = te,
+                   output_Raster = TRUE, ...)
     
   } else {
-    out <- raster(mod_filename)
+    raster(mod_filename)
   }
-  
-  # add Date
-  out <- setZ(out, datetime, 'DateTime')
-  
-  out
-  
-  ### GDALWARP - did not work
-  # target extent in UTM
-  #te <- c(geo_info$UL_corner$ULX, 
-  #        geo_info$UL_corner$ULY - resolution * geo_info$dimensions$NROWS,
-  #        geo_info$UL_corner$ULX + resolution * geo_info$dimensions$NCOLS,
-  #        geo_info$UL_corner$ULY)
-  #gdalwarp(jp2, dst, t_srs = geo_info$EPSG, te = te) 
 }

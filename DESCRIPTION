@@ -1,6 +1,6 @@
 Package: S2utils
-Version: 0.1
-Date: 2016-01-26
+Version: 0.2
+Date: 2016-10-11
 Title: ESA Sentinel-2 processing utilities
 Description: Utilities to work with ESA Sentinel-2 satellite products
 Author: Benjamin Brede benjamin.brede@wur.nl

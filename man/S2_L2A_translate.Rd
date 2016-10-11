@@ -4,18 +4,21 @@
 \alias{S2_L2A_translate}
 \title{Translate S2 L2A products}
 \usage{
-S2_L2A_translate(S2_folder, band, resolution = c(10, 20, 60), filename, ...)
+S2_L2A_translate(S2_folder, band, resolution = c(10, 20, 60), filename,
+  overwrite = FALSE, ...)
 }
 \arguments{
 \item{S2_folder}{Folder that contains the S2 L2A product (typically suffixed with .SAFE)}
 
-\item{band}{Band to extract, can be spectral (B01 to B12 plus B8A) or thematic (SCL or CLD)}
+\item{band}{Band to extract, can be spectral (B02 to B12 plus B8A) or thematic (SCL or CLD)}
 
-\item{resolution}{Band resolution in m}
+\item{resolution}{Band resolution in m, allowed: 10, 20, 60}
 
-\item{filename}{Output filename, single tiles will be suffixed with tileID}
+\item{filename}{Output filename; will be automatically suffixed with tileID, band name and resolution}
 
-\item{...}{Additional arguments as for \code{\link{writeRaster}}}
+\item{overwrite}{Overwrite existing files?}
+
+\item{...}{Additional arguments as for \code{\link{gdal_translate}}, not allowed: a_srs, a_ullr.}
 }
 \value{
 List of RasterLayers corresponding to the raster of the specified band and resolution
@@ -23,8 +26,12 @@ List of RasterLayers corresponding to the raster of the specified band and resol
 \description{
 Translate an S2 L2A scene into other raster format.
 }
-\details{
-rasterOptions apply for writing the return rasters
+\examples{
+# select appropriate GDAL installtion that can read JPG2000
+gdal_setInstallation('/usr/bin/', rescan = TRUE)
+
+S2 <- 'S2A_USER_PRD_MSIL2A_PDMC_20151001T124224_R008_V20151001T104705_20151001T104705.SAFE'
+S2_L2A_translate(S2, 'B8A', 20, 'test.tif')  
 }
 \author{
 Benjamin Brede

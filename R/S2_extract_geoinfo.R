@@ -13,10 +13,7 @@
 #' 
 #' @import XML
 
-
 S2_extract_geoinfo <- function(S2_xml, resolution=c(10, 20, 60)) {
-  
-  library(XML)
   
   xml_tree <- xmlParse(S2_xml)
   

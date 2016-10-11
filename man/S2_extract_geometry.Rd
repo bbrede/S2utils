@@ -4,7 +4,7 @@
 \alias{S2_extract_geometry}
 \title{Extract sensor geometry}
 \usage{
-S2_extract_geometry(S2_xml, mode = c("mean", "raster"), ...)
+S2_extract_geometry(S2_xml, mode = c("mean", "spatial"), ...)
 }
 \arguments{
 \item{S2_xml}{S2 granule xml file}
@@ -14,7 +14,7 @@ S2_extract_geometry(S2_xml, mode = c("mean", "raster"), ...)
 \item{...}{Additional arguments as for \code{\link{writeRaster}}}
 }
 \value{
-Named list (for mode 'mean') or RasterBrickStack (for mode 'raster')
+Named list with mean values (for mode 'mean') or SpatialPointsDataFrame (for mode 'spatial')
 }
 \description{
 Extract sensor geometry

@@ -22,6 +22,9 @@ Hub_query(uri_query, username, password, xml_file = tempfile(fileext =
 XML file name (same as input)
 }
 \description{
+Performs Hub queries via wget.
+}
+\details{
 Query the API Hub for Sentinel scenes
 }
 \author{

@@ -25,11 +25,16 @@ S2_L2A_granule <- function(granule_path, band, resolution = c(10, 20, 60), filen
   
   # extract corner coordinates, cell size, CRS from xml
   xml_file <- list.files(granule_path, 'S2A.+xml$', full.names = TRUE, recursive = FALSE)
+  if (length(xml_file) == 0)
+    stop(paste('Metadata file (xml) not found for granule:', granule_path))
   geo_info <- S2_extract_geoinfo(xml_file, resolution)
   
   jp2 <- list.files(path = granule_path,
                     pattern = paste0(band, '_.*', resolution, 'm.jp2'),
                     full.names = TRUE, recursive = TRUE)
+  
+  if (length(jp2) == 0)
+    stop(paste('Image file (jp2) not found: Band', band, 'Resolution', resolution))
   
   # extract date and time from filename
   datetime <- as.POSIXct(strptime(sub('.*S2.*_V([0-9]{8}T[0-9]{6})_.*jp2', '\\1', jp2), '%Y%m%dT%H%M%S', 'UTC'))

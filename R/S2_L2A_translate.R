@@ -23,13 +23,16 @@
 #' gdal_setInstallation('/usr/bin/', rescan = TRUE)
 #' 
 #' S2 <- 'S2A_USER_PRD_MSIL2A_PDMC_20151001T124224_R008_V20151001T104705_20151001T104705.SAFE'
-#' # use co to access creation options for GTiff files as in gdal_translate
+#' # use co argument to access creation options for GTiff files as in gdal_translate
 #' S2_L2A_translate(S2, 'B8A', 20, 'test.tif', co = c('COMPRESS=LZW'))  
 
 S2_L2A_translate <- function(S2_folder, band, resolution = c(10, 20, 60), filename, overwrite = FALSE, ...) {
       
   # list all granule folders
   all_granules <- list.dirs(file.path(S2_folder, 'GRANULE'), full.names = TRUE, recursive = FALSE) 
+  
+  if (length(all_granules) == 0)
+    stop('No granules found in this product!')
   
   # extract the single tiles
   lapply(all_granules, S2_L2A_granule, band = band, resolution = resolution, filename = filename, ...)

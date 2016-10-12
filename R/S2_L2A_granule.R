@@ -33,13 +33,13 @@ S2_L2A_granule <- function(granule_path, band, resolution = c(10, 20, 60), filen
                     pattern = paste0(band, '_.*', resolution, 'm.jp2'),
                     full.names = TRUE, recursive = TRUE)
   
-  if (length(jp2) == 0)
-    stop(paste('Image file (jp2) not found: Band', band, 'Resolution', resolution))
-  
   # extract date and time from filename
   datetime <- as.POSIXct(strptime(sub('.*S2.*_V([0-9]{8}T[0-9]{6})_.*jp2', '\\1', jp2), '%Y%m%dT%H%M%S', 'UTC'))
   # extract tile ID from filename
   tileID <- sub('.*_(T[0-9]{2}[A-Z]{3})_.*jp2', '\\1', jp2)
+  
+  if (length(jp2) == 0)
+    stop(paste('Image file (jp2) not found: Band', band, 'Resolution', resolution, 'Granule', tileID))
   
   # insert tileID in filename
   mod_filename <- paste0(file_path_sans_ext(filename), '_', tileID, '_', band, '_', resolution, 'm.', file_ext(filename))

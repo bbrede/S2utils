@@ -33,10 +33,10 @@ S2_L2A_granule <- function(granule_path, band, resolution = c(10, 20, 60), filen
                     pattern = paste0(band, '_.*', resolution, 'm.jp2'),
                     full.names = TRUE, recursive = TRUE)
   
-  # extract date and time from filename
-  datetime <- as.POSIXct(strptime(sub('.*S2.*_V([0-9]{8}T[0-9]{6})_.*jp2', '\\1', jp2), '%Y%m%dT%H%M%S', 'UTC'))
-  # extract tile ID from filename
-  tileID <- sub('.*_(T[0-9]{2}[A-Z]{3})_.*jp2', '\\1', jp2)
+  # extract date and time from granule_path
+  datetime <- as.POSIXct(strptime(sub('.*S2.*_V([0-9]{8}T[0-9]{6})_.*', '\\1', granule_path), '%Y%m%dT%H%M%S', 'UTC'))
+  # extract tile ID from granule_path
+  tileID <- sub('.*_(T[0-9]{2}[A-Z]{3})_.*', '\\1', granule_path)
   
   if (length(jp2) == 0)
     stop(paste('Image file (jp2) not found: Band', band, 'Resolution', resolution, 'Granule', tileID))

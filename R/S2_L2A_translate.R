@@ -5,7 +5,7 @@
 #' @param S2_folder Folder that contains the S2 L2A product (typically suffixed with .SAFE)
 #' @param band Band to extract, can be spectral (B02 to B12 plus B8A) or thematic (SCL or CLD)
 #' @param resolution Band resolution in m, allowed: 10, 20, 60
-#' @param filename Output filename; will be automatically suffixed with tileID, band name and resolution
+#' @param filename Output filename; will be automatically suffixed with granuleID, band name and resolution
 #' @param overwrite Overwrite existing files?
 #' @param ... Additional arguments as for \code{\link{gdal_translate}}, not allowed: a_srs, a_ullr.
 #' 
@@ -34,6 +34,6 @@ S2_L2A_translate <- function(S2_folder, band, resolution = c(10, 20, 60), filena
   if (length(all_granules) == 0)
     stop('No granules found in this product!')
   
-  # extract the single tiles
+  # extract the single granules
   lapply(all_granules, S2_L2A_granule, band = band, resolution = resolution, filename = filename, ...)
 }

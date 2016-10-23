@@ -5,6 +5,7 @@
 #' @param S2_folder Folder that contains the S2 L2A product (typically suffixed with .SAFE)
 #' @param band Band to extract, can be spectral (B02 to B12 plus B8A) or thematic (SCL or CLD)
 #' @param resolution Band resolution in m, allowed: 10, 20, 60
+#' @param granules Granules to translate, 'all' for all in the product (see \link{https://sentinel.esa.int/documents/247904/1955685/S2A_OPER_GIP_TILPAR_MPC__20151209T095117_V20150622T000000_21000101T000000_B00.kml})
 #' @param filename Output filename; will be automatically suffixed with granuleID, band name and resolution
 #' @param overwrite Overwrite existing files?
 #' @param ... Additional arguments as for \code{\link{gdal_translate}}, not allowed: a_srs, a_ullr.
@@ -26,14 +27,23 @@
 #' # use co argument to access creation options for GTiff files as in gdal_translate
 #' S2_L2A_translate(S2, 'B8A', 20, 'test.tif', co = c('COMPRESS=LZW'))  
 
-S2_L2A_translate <- function(S2_folder, band, resolution = c(10, 20, 60), filename, overwrite = FALSE, ...) {
+S2_L2A_translate <- function(S2_folder, band, resolution = c(10, 20, 60), granules = 'all', filename, overwrite = FALSE, ...) {
       
   # list all granule folders
-  all_granules <- list.dirs(file.path(S2_folder, 'GRANULE'), full.names = TRUE, recursive = FALSE) 
+  available_granule_folders <- list.dirs(file.path(S2_folder, 'GRANULE'), full.names = TRUE, recursive = FALSE) 
+  available_granule <- sub('.*_T([0-9]{2}[A-Z]{3})_.*', '\\1', granule_folders)
+  # granules to process
+  if (granules[1] == 'all') {
+    proc_granules <- available_granule_folders
+  } else {
+    proc_granules <- granule_folders[available_granule %in% granules]
+  }
   
-  if (length(all_granules) == 0)
-    stop('No granules found in this product!')
-  
-  # extract the single granules
-  lapply(all_granules, S2_L2A_granule, band = band, resolution = resolution, filename = filename, ...)
+  if (length(proc_granules) == 0) {
+    warning('No (requested) granules found in this product!')
+    list()
+  } else {
+    # extract the single granules
+    lapply(all_granules, S2_L2A_granule, band = band, resolution = resolution, filename = filename, ...)
+  }
 }

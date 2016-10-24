@@ -31,12 +31,12 @@ S2_L2A_translate <- function(S2_folder, band, resolution = c(10, 20, 60), granul
       
   # list all granule folders
   available_granule_folders <- list.dirs(file.path(S2_folder, 'GRANULE'), full.names = TRUE, recursive = FALSE) 
-  available_granule <- sub('.*_T([0-9]{2}[A-Z]{3})_.*', '\\1', granule_folders)
+  available_granule <- sub('.*_T([0-9]{2}[A-Z]{3})_.*', '\\1', available_granule_folders)
   # granules to process
   if (granules[1] == 'all') {
     proc_granules <- available_granule_folders
   } else {
-    proc_granules <- granule_folders[available_granule %in% granules]
+    proc_granules <- available_granule_folders[available_granule %in% granules]
   }
   
   if (length(proc_granules) == 0) {
@@ -44,6 +44,6 @@ S2_L2A_translate <- function(S2_folder, band, resolution = c(10, 20, 60), granul
     list()
   } else {
     # extract the single granules
-    lapply(all_granules, S2_L2A_granule, band = band, resolution = resolution, filename = filename, ...)
+    lapply(proc_granules, S2_L2A_granule, band = band, resolution = resolution, filename = filename, ...)
   }
 }

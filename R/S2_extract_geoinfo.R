@@ -5,7 +5,7 @@
 #' @param S2_xml S2 product xml file
 #' @param resolution For which resolution shall the information be extracted?
 #' 
-#' @return list with dimensions (numeric of 2), UL corner (UTM) cooridnates (numeric of 2), EPSG number of CRS
+#' @return list with dimensions (numeric of 2), UL corner (UTM) coordinates (numeric of 2), EPSG number of CRS
 #' 
 #' @author Benjamin Brede
 #' 

@@ -5,6 +5,13 @@
 #' @param S2_safe Chr. S2 SAFE folder (S2A_USER_PRD_MSIL2A_PDMC_....SAFE)
 #' 
 #' @return list of granules of list of names elements
+#' \describe{
+#'  \item{Granule_Name}{Full granule name, e.g. "S2A_USER_MSI_L2A_TL_SGS__20160119T144513_A003008_T31UFT_N02.01"}
+#'  \item{Image_names}{Chr[]. Typically JP2000 files}
+#'  \item{EPSG}{EPSG code of coordinate reference system, e.g. "epsg:32631"}
+#'  \item{Geoinfo}{Data.frame with number rows/columns and upper left corner coordinates}
+#'  \item{Sensing_Time}{POSIXct. Granule sensing time in UTC.}
+#' }
 #' 
 #' @author Benjamin Brede
 #' 

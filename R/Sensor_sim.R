@@ -2,11 +2,11 @@
 #' 
 #' Spectral sensor simulation
 #' 
-#' @description Assume the simulating sensors has more bands than target sensor. 
+#' @description Assume the simulating sensor has more bands than target sensor. 
 #' 
 #' @param simulator Simulator/emulator
 #' @param target Simulated sensor
-#' @param eps The simulator and the target need to share at least one wavelength for which both their responses are hight than eps
+#' @param rho_eps The simulator and the target need to share at least one wavelength for which both their responses are higher than rho_eps
 #' 
 #' @return weights to apply to the bands of src to simulate target; as matrix
 #' 
@@ -14,7 +14,7 @@
 #' 
 #' @export
 
-Sensor_sim <- function(simulator, target, eps) {
+Sensor_sim <- function(simulator, target, rho_eps) {
   
   # check if sensor specs are same
   if (
@@ -24,7 +24,7 @@ Sensor_sim <- function(simulator, target, eps) {
       attr(simulator, 'stepsize') != attr(target, 'stepsize'))
     stop('Sensor specs not the same!')
   
-  lambda <- seq(attr(simulator, 'minwl'), attr(simulator, 'maxwl'), attr(simulator, 'stepsize'))
+  # lambda <- seq(attr(simulator, 'minwl'), attr(simulator, 'maxwl'), attr(simulator, 'stepsize'))
   
   # simulate bands (as matrix) with given weights (vector) and compare with trg (vector)
   band_error <- function(weights, simu, trg) {
@@ -48,7 +48,7 @@ Sensor_sim <- function(simulator, target, eps) {
     # bands that are suitable to simulate trg_band (set all non-releveant bands to NA; non-relevant = bands that don't overlap anywhere in the spectrum)
     is_suitable <- apply(simu, MARGIN = 2, function(col) {
       # test if any responses overlap between col of simulator and trg_band
-      any(col > eps & trg > eps)
+      any(col > rho_eps & trg > rho_eps)
     })
     suitable_num <- sum(is_suitable)
     

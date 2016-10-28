@@ -24,7 +24,7 @@
 #' gdal_setInstallation('/usr/bin/', rescan = TRUE)
 #' 
 #' S2 <- 'S2A_USER_PRD_MSIL2A_PDMC_20151001T124224_R008_V20151001T104705_20151001T104705.SAFE'
-#' # use co argument to access creation options for GTiff files as in gdal_translate
+#' # use co argument to pass creation options for GTiff files (as in gdal_translate)
 #' S2_L2A_translate(S2, band = 'B8A', resolution = 20, granules = 'T31UFU', 'test.tif', co = c('COMPRESS=LZW'))  
 
 S2_L2A_translate <- function(S2_safe, band, resolution = c(10, 20, 60), granules = 'all', filename, sep = '_', ...) {
@@ -50,8 +50,8 @@ S2_L2A_translate <- function(S2_safe, band, resolution = c(10, 20, 60), granules
     if (!dir.exists(granule_path))
       stop('Granule folder does not exists: ', granule_path)
     
-    out_list <- per_band <- lapply(band, function(b) {
-      per_resolution <- lapply(resolution, function(r) {
+    out_list <- lapply(band, function(b) {
+      lapply(resolution, function(r) {
         
         # search pattern
         img_pattern <- paste0(grep(paste0(b, '_.*', r, 'm$'), granule_meta$Image_names, value = TRUE), '.jp2$')
@@ -62,9 +62,9 @@ S2_L2A_translate <- function(S2_safe, band, resolution = c(10, 20, 60), granules
         
         mod_filename <- paste0(file_path_sans_ext(filename), sep, g, sep, b, sep, r, 'm.', file_ext(filename))
         
-        # target extent in GDAL conform vector c(ulx,uly,lrx,lry)
+        # granule_meta$Geoinfo is data.frame
         geoinfo <- subset(granule_meta$Geoinfo, Resolution == r)
-        
+        # target extent in GDAL conform vector c(ulx,uly,lrx,lry)
         te <- c(geoinfo$ULX,
                 geoinfo$ULY,
                 geoinfo$ULX + r * geoinfo$NCOLS,
@@ -78,7 +78,7 @@ S2_L2A_translate <- function(S2_safe, band, resolution = c(10, 20, 60), granules
                          a_ullr = te,
                          ...)
         }, 
-        error = function(e) stop('GDAL could not translate file:', img_file))
+        error = function(e) stop('GDAL could not translate file: ', img_file, 'GDAL says: ', e))
         
         mod_filename
       })

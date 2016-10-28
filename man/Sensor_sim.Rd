@@ -4,20 +4,20 @@
 \alias{Sensor_sim}
 \title{Simulate sensor}
 \usage{
-Sensor_sim(simulator, target, eps)
+Sensor_sim(simulator, target, rho_eps)
 }
 \arguments{
 \item{simulator}{Simulator/emulator}
 
 \item{target}{Simulated sensor}
 
-\item{eps}{The simulator and the target need to share at least one wavelength for which both their responses are hight than eps}
+\item{rho_eps}{The simulator and the target need to share at least one wavelength for which both their responses are higher than rho_eps}
 }
 \value{
 weights to apply to the bands of src to simulate target; as matrix
 }
 \description{
-Assume the simulating sensors has more bands than target sensor.
+Assume the simulating sensor has more bands than target sensor.
 }
 \details{
 Spectral sensor simulation

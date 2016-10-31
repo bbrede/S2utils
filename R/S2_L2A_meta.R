@@ -94,7 +94,7 @@ S2_L2A_meta <- function(S2_safe) {
          Geoinfo = granule_geoinfo[[i]],
          Sensing_Time = sensing_times[[i]])
   })
-  names(out) <- granule_Ids
+  names(out) <- granule_Ids[granule_xml_exists]
   
   out
 }

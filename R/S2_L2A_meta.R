@@ -88,8 +88,8 @@ S2_L2A_meta <- function(S2_safe) {
   
   # build together output: list of granules of list of named elements
   out <- lapply(1:length(granule_trees), function(i) {
-    list(Granule_Name = granule_names[i],
-         Image_names = image_names[[i]],
+    list(Granule_Name = granule_names[granule_xml_exists][i],
+         Image_names = image_names[granule_xml_exists][[i]],
          EPSG = granule_epsg[i],
          Geoinfo = granule_geoinfo[[i]],
          Sensing_Time = sensing_times[[i]])

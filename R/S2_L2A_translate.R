@@ -48,7 +48,7 @@ S2_L2A_translate <- function(S2_safe, band, resolution = c(10, 20, 60), granules
     granule_path <- file.path(S2_safe, 'GRANULE', granule_meta$Granule_Name)
     
     if (!dir.exists(granule_path))
-      stop('Granule folder does not exists: ', granule_path)
+      stop('Granule folder does not exist: ', granule_path)
     
     out_list <- lapply(band, function(b) {
       lapply(resolution, function(r) {

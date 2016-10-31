@@ -2,7 +2,7 @@
 #' 
 #' Extract S2 L2A meta data
 #' 
-#' @param S2_safe Chr. S2 SAFE folder (S2A_USER_PRD_MSIL2A_PDMC_....SAFE)
+#' @param S2_safe Chr. S2 SAFE folder ("S2A_USER_PRD_MSIL2A_PDMC_....SAFE")
 #' 
 #' @return list of granules of list of names elements
 #' \describe{
@@ -46,13 +46,11 @@ S2_L2A_meta <- function(S2_safe) {
   granule_xmls <- paste0(S2_safe, '/GRANULE/', granule_names, '/', 
                          sub('(.*)MSI(.*)_N[0-9]{2}.[0-9]{2}', '\\1MTD\\2', granule_names), 
                          '.xml')
+  granule_xml_exists <- file.exists(granule_xmls)
+  if (any(!granule_xml_exists))
+    warning('Some granule xml missing: ', granule_xmls[!granule_xml_exists])
   
-  granule_trees <- lapply(granule_xmls, function(xml) {
-    if (!file.exists(xml))
-      stop(paste('XML file not found:', xml))
-    else
-      read_xml(xml)
-  })
+  granule_trees <- lapply(granule_xmls[granule_xml_exists], read_xml)
 
   # EPSG codes
   granule_epsg <- tolower(sapply(granule_trees, function(node) xml_text(xml_find_first(node, '//HORIZONTAL_CS_CODE'))))
@@ -89,7 +87,7 @@ S2_L2A_meta <- function(S2_safe) {
   #### build output ####
   
   # build together output: list of granules of list of named elements
-  out <- lapply(1:length(granule_xmls), function(i) {
+  out <- lapply(1:length(granule_trees), function(i) {
     list(Granule_Name = granule_names[i],
          Image_names = image_names[[i]],
          EPSG = granule_epsg[i],

@@ -18,6 +18,7 @@
 #' 
 #' @import raster
 #' @import gdalUtils
+#' @import tools
 #' 
 #' @examples 
 #' # select appropriate GDAL installtion that can read JPG2000

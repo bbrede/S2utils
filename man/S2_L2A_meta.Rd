@@ -7,7 +7,7 @@
 S2_L2A_meta(S2_safe)
 }
 \arguments{
-\item{S2_safe}{Chr. S2 SAFE folder (S2A_USER_PRD_MSIL2A_PDMC_....SAFE)}
+\item{S2_safe}{Chr. S2 SAFE folder ("S2A_USER_PRD_MSIL2A_PDMC_....SAFE")}
 }
 \value{
 list of granules of list of names elements

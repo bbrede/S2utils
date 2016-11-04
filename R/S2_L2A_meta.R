@@ -80,6 +80,15 @@ S2_L2A_meta <- function(S2_safe) {
     as.POSIXct(strptime(t, '%FT%T', tz = 'UTC'))
   })
   
+  obs_geometry <- lapply(granule_trees, function(node) {
+    list(Theta_sun = as.numeric(xml_extract(node, '//Mean_Sun_Angle/ZENITH_ANGLE')), 
+         Theta_view_avg = mean(as.numeric(xml_text(xml_find_all(node, '//Mean_Viewing_Incidence_Angle/ZENITH_ANGLE')))),
+         Phi_sun = as.numeric(xml_extract(node, '//Mean_Sun_Angle/AZIMUTH_ANGLE')),
+         Phi_view_avg = mean(as.numeric(xml_text(xml_find_all(node, '//Mean_Viewing_Incidence_Angle/AZIMUTH_ANGLE')))),
+         Phi_rel = abs((phi_sun - phi_view_avg + 180) %% 360 - 180))
+  })
+  
+  
   #### build output ####
   
   # build together output: list of granules of list of named elements
@@ -88,7 +97,8 @@ S2_L2A_meta <- function(S2_safe) {
          Image_names = images[[i]],
          EPSG = granule_epsg[i],
          Geoinfo = granule_geoinfo[[i]],
-         Sensing_Time = sensing_times[[i]])
+         Sensing_Time = sensing_times[[i]],
+         Obs_Geometry = obs_geometry[[i]])
   })
   names(out) <- granule_Ids
   

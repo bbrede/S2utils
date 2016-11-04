@@ -13,7 +13,7 @@ S2_L2A_meta(S2_safe)
 list of granules of list of names elements
 \describe{
  \item{Granule_Name}{Full granule name, e.g. "S2A_USER_MSI_L2A_TL_SGS__20160119T144513_A003008_T31UFT_N02.01"}
- \item{Image_names}{Chr[]. Typically JP2000 files}
+ \item{Image_names}{Data.frame(File[Chr], Resolution[Num], Band[Chr])}
  \item{EPSG}{EPSG code of coordinate reference system, e.g. "epsg:32631"}
  \item{Geoinfo}{Data.frame with number rows/columns and upper left corner coordinates}
  \item{Sensing_Time}{POSIXct. Granule sensing time in UTC.}

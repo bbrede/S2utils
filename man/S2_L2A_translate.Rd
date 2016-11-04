@@ -10,11 +10,11 @@ S2_L2A_translate(S2_safe, band, resolution = c(10, 20, 60),
 \arguments{
 \item{S2_safe}{Chr. S2 SAFE folder (S2A_USER_PRD_MSIL2A_PDMC_....SAFE)}
 
-\item{band}{Chr. Band to extract, see \code{\link{S2_bands}}.}
+\item{band}{Chr[]. Band to extract, see \code{\link{S2_bands}}.}
 
-\item{resolution}{Num. Resolution in m, allowed: 10, 20, 60.}
+\item{resolution}{Num[]. Resolutions in m, allowed: 10, 20, 60.}
 
-\item{granules}{Chr. Granules to translate, prefixes with 'T' (e.g. 'T32ULD'), 'all' for all granules in the product (see \link{https://sentinel.esa.int/documents/247904/1955685/S2A_OPER_GIP_TILPAR_MPC__20151209T095117_V20150622T000000_21000101T000000_B00.kml})}
+\item{granules}{Chr[]. Granules to translate, prefixes with 'T' (e.g. 'T32ULD'), 'all' for all granules in the product (see \link{https://sentinel.esa.int/documents/247904/1955685/S2A_OPER_GIP_TILPAR_MPC__20151209T095117_V20150622T000000_21000101T000000_B00.kml})}
 
 \item{filename}{Chr. Output filename; will be automatically suffixed with granuleID, band name and resolution}
 
@@ -23,7 +23,7 @@ S2_L2A_translate(S2_safe, band, resolution = c(10, 20, 60),
 \item{...}{Additional arguments as for \code{\link{gdal_translate}}, not allowed: a_srs, a_ullr.}
 }
 \value{
-Named list of Chr[], containing the filenames. Names are granule identifiers.
+Named list of Chr[], containing the filenames. List names are granule identifiers.
 }
 \description{
 Translate an S2 L2A scene into other raster format.
@@ -34,7 +34,8 @@ gdal_setInstallation('/usr/bin/', rescan = TRUE)
 
 S2 <- 'S2A_USER_PRD_MSIL2A_PDMC_20151001T124224_R008_V20151001T104705_20151001T104705.SAFE'
 # use co argument to pass creation options for GTiff files (as in gdal_translate)
-S2_L2A_translate(S2, band = 'B8A', resolution = 20, granules = 'T31UFU', 'test.tif', co = c('COMPRESS=LZW'))  
+# use a_nodata argument to set NoData value
+S2_L2A_translate(S2, band = c('B04', 'B8A'), resolution = 20, granules = 'T31UFU', 'test.tif', co = c('COMPRESS=LZW'), a_nodata = 0)  
 }
 \author{
 Benjamin Brede

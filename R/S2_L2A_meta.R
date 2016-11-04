@@ -7,7 +7,7 @@
 #' @return list of granules of list of names elements
 #' \describe{
 #'  \item{Granule_Name}{Full granule name, e.g. "S2A_USER_MSI_L2A_TL_SGS__20160119T144513_A003008_T31UFT_N02.01"}
-#'  \item{Image_names}{Chr[]. Typically JP2000 files}
+#'  \item{Image_names}{Data.frame(File[Chr], Resolution[Num], Band[Chr])}
 #'  \item{EPSG}{EPSG code of coordinate reference system, e.g. "epsg:32631"}
 #'  \item{Geoinfo}{Data.frame with number rows/columns and upper left corner coordinates}
 #'  \item{Sensing_Time}{POSIXct. Granule sensing time in UTC.}
@@ -21,36 +21,33 @@
 
 S2_L2A_meta <- function(S2_safe) {
   
-  #### main xml ####
+  #### file listing ####
   
-  main_xml <- list.files(S2_safe, pattern = 'S2A.*xml$', full.names = TRUE)
-  
-  if (length(main_xml) != 1)
-    stop('Product xml (top level in SAFE folder) not identified!')
-  
-  main_tree <- read_xml(main_xml)
-  
-  # list of xml nodes
-  granule_nodes <- xml_find_all(main_tree, '//Granules')
+  # directories for granules
+  granule_dirs <- list.dirs(file.path(S2_safe, 'GRANULE'), recursive = FALSE)
   # names, e.g. "S2A_USER_MSI_L2A_TL_SGS__20160119T144513_A003008_T31UGU_N02.01" 
-  granule_names <- unname(sapply(granule_nodes, function(node) xml_attrs(node)['granuleIdentifier']))
+  granule_names <- basename(granule_dirs)
   # IDs, e.g. "31UGU"
   granule_Ids <- unname(sub('.*_(T[0-9]{2}[A-Z]{3})_.*', '\\1', granule_names))
-  # image names (without suffix)
-  image_names <- lapply(granule_nodes, function(node) sapply(xml_children(node), xml_text))
   
+  images <- lapply(granule_dirs, function(g_dir) {
+    # allow only bands that are listed in S2_bands()
+    allowed_bands <- paste0('.*_(', paste(S2_bands()$Name, collapse = '|'), ')_.*')
+    
+    all_jp2 <- list.files(g_dir, pattern = 'S2A.*_.0m.jp2$', recursive = TRUE)
+    jp2 <- grep(allowed_bands, all_jp2, value = TRUE)
+    res <- as.numeric(sub('.*_(.0)m.jp2$', '\\1', jp2))
+    band <- sub(allowed_bands, '\\1', jp2)
+    
+    data.frame(File = as.character(jp2), Resolution = res, Band = band)
+  })
   
   #### granule xmls ####
   
   # paths to granule xml files
-  granule_xmls <- paste0(S2_safe, '/GRANULE/', granule_names, '/', 
-                         sub('(.*)MSI(.*)_N[0-9]{2}.[0-9]{2}', '\\1MTD\\2', granule_names), 
-                         '.xml')
-  granule_xml_exists <- file.exists(granule_xmls)
-  if (any(!granule_xml_exists))
-    warning('Some granule xml missing: ', granule_xmls[!granule_xml_exists])
-  
-  granule_trees <- lapply(granule_xmls[granule_xml_exists], read_xml)
+  granule_xmls <- unname(sapply(granule_dirs, list.files, pattern = 'S2A.*xml$', full.names = TRUE))
+
+  granule_trees <- lapply(granule_xmls, read_xml)
 
   # EPSG codes
   granule_epsg <- tolower(sapply(granule_trees, function(node) xml_text(xml_find_first(node, '//HORIZONTAL_CS_CODE'))))
@@ -83,18 +80,17 @@ S2_L2A_meta <- function(S2_safe) {
     as.POSIXct(strptime(t, '%FT%T', tz = 'UTC'))
   })
   
-  
   #### build output ####
   
   # build together output: list of granules of list of named elements
   out <- lapply(1:length(granule_trees), function(i) {
-    list(Granule_Name = granule_names[granule_xml_exists][i],
-         Image_names = image_names[granule_xml_exists][[i]],
+    list(Granule_Name = granule_names[i],
+         Image_names = images[[i]],
          EPSG = granule_epsg[i],
          Geoinfo = granule_geoinfo[[i]],
          Sensing_Time = sensing_times[[i]])
   })
-  names(out) <- granule_Ids[granule_xml_exists]
+  names(out) <- granule_Ids
   
   out
 }
